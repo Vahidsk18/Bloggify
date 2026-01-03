@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; color: #0d0c22; background-color: #ffffff; }
+        .input-focus:focus { 
+            border-color: #ea4c89; 
+            box-shadow: 0 0 0 4px rgba(234, 76, 137, 0.1); 
+            outline: none;
+        }
+        /* Custom styling for the file upload button */
+        input[type="file"]::file-selector-button {
+            background-color: #0d0c22;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 15px;
+            transition: all 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover { background-color: #374151; }
+    </style>
+    <title>Create New Post - Bloggify</title>
+</head>
+
+<body class="bg-white min-h-screen">
+    <%- include('./partials/nav') %>
+
+    <div class="max-w-[800px] mx-auto py-16 px-6">
+        <div class="mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Create New Post</h2>
+            <p class="text-gray-500">Share your thoughts on URL Shorteners or anything else with the community.</p>
+        </div>
+
+        <form action="/blog" method="post" enctype="multipart/form-data" class="space-y-8">
+            
+            <div class="bg-[#f3f3f4] p-8 rounded-2xl border-2 border-dashed border-gray-200 text-center">
+                <label for="coverimg" class="block text-sm font-bold mb-4 cursor-pointer">Cover Image</label>
+                <input type="file" 
+                       name="coverimg" 
+                       id="coverimg"
+                       accept="image/*"
+                       class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4"
+                       required>
+                <p class="mt-3 text-xs text-gray-400">Recommended size: 1200x800px (Max 5MB)</p>
+            </div>
+            
+            <div>
+                <label for="title" class="block text-sm font-bold mb-2">Post Title</label>
+                <input type="text" 
+                       name="title" 
+                       id="title"
+                       placeholder="Enter an engaging title..."
+                       class="w-full px-5 py-4 bg-[#f3f3f4] border border-transparent rounded-xl text-lg font-semibold transition-all input-focus" 
+                       required>
+            </div>
+            
+            <div>
+                <label for="body" class="block text-sm font-bold mb-2">Content</label>
+                <textarea id="body" 
+                          name="body"
+                          rows="12" 
+                          placeholder="Tell your story..."
+                          class="w-full px-5 py-4 bg-[#f3f3f4] border border-transparent rounded-xl text-base leading-relaxed transition-all input-focus min-h-[300px] resize-none" 
+                          required></textarea>
+            </div>
+            
+            <div class="flex items-center space-x-4 pt-4">
+                <button type="submit" 
+                        class="bg-[#ea4c89] text-white px-8 py-4 rounded-full font-bold text-sm hover:bg-[#f082ac] transition-all shadow-lg shadow-pink-100 flex items-center">
+                    Publish Post <span class="ml-2 text-base">🚀</span>
+                </button>
+                <a href="/" class="text-sm font-bold text-gray-500 hover:text-black transition-colors">Cancel</a>
+            </div>
+        </form>
+    </div>
+    
+    <%- include('./partials/scripts') %>
+</body>
+</html>

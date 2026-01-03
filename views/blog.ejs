@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head') %>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title><%= blog.title %></title>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #292929; /* Slightly softer than pure black for readability */
+            background-color: #ffffff;
+        }
+
+        /* Reading Optimization */
+        .readable-content {
+            line-height: 1.8;
+            letter-spacing: -0.003em;
+            word-spacing: 0.05em;
+            color: #333333;
+        }
+
+        /* Editorial Drop Cap - Matches your pink theme */
+        .readable-content::first-letter {
+            float: left;
+            font-size: 5rem;
+            line-height: 0.85;
+            margin-top: 0.1em;
+            margin-right: 0.1em;
+            font-weight: 700;
+            color: #ea4c89;
+        }
+
+        .input-focus:focus {
+            border-color: #ea4c89;
+            box-shadow: 0 0 0 4px rgba(234, 76, 137, 0.1);
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('./partials/nav') %>
+
+    <article class="max-w-[1000px] mx-auto px-6 py-12 md:py-20">
+
+        <header class="max-w-[740px] mx-auto mb-10 text-center md:text-left">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-8 leading-[1.15] text-[#0d0c22]">
+                <%= blog.title %>
+            </h1>
+
+            <div class="flex items-center space-x-4">
+                <% if (blog.createdBy && blog.createdBy.profileimg) { %>
+                    <img src="<%= blog.createdBy.profileimg %>"
+                        class="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm" alt="author">
+                <% } else { %>
+                    <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center font-bold text-[#ea4c89]">
+                        <%= blog.createdBy.fullName.charAt(0) %>
+                    </div>
+                <% } %>
+                <div class="text-left">
+                    <p class="font-bold text-gray-900 leading-none mb-1">
+                        <%= blog.createdBy.fullName %>
+                    </p>
+                    <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Published in Bloggify</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="relative w-full aspect-video rounded-3xl overflow-hidden mb-12 shadow-2xl">
+            <img src="<%= blog.coverImgURL %>" class="w-full h-full object-cover" alt="cover">
+        </div>
+
+        <div class="max-w-[740px] mx-auto">
+            <div class="readable-content text-lg md:text-xl whitespace-pre-line border-b border-gray-100 pb-16">
+                <%= blog.body %>
+            </div>
+
+            <section class="mt-16">
+                <h2 class="text-2xl font-bold mb-8 flex items-center">
+                    Responses 
+                    <span class="ml-3 px-3 py-1 bg-gray-100 text-gray-500 text-sm rounded-full"><%= comments.length %></span>
+                </h2>
+
+                <% if (locals.user) { %>
+                    <form class="mb-12 bg-white border border-gray-100 p-6 rounded-2xl shadow-sm" action="/blog/comment/<%= blog._id %>" method="post">
+                        <div class="flex items-start space-x-4">
+                            <img src="<%= locals.user.profileimg %>"
+                                class="w-10 h-10 rounded-full border border-gray-200 object-cover" alt="User">
+                            <div class="flex-1">
+                                <textarea name="comment" placeholder="What are your thoughts?"
+                                    class="w-full p-4 bg-[#f3f3f4] border border-transparent rounded-xl text-sm transition-all input-focus min-h-[120px] resize-none"
+                                    required></textarea>
+                                <div class="mt-3 flex justify-end">
+                                    <button type="submit"
+                                        class="bg-[#ea4c89] text-white px-8 py-2 rounded-full font-bold text-sm hover:bg-[#f082ac] transition-colors shadow-lg shadow-pink-100">
+                                        Publish
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                <% } else { %>
+                    <div class="bg-[#f3f3f4] p-8 rounded-2xl text-center mb-12 border border-dashed border-gray-300">
+                        <p class="text-gray-600 text-sm font-medium">Want to join the conversation? <a href="/user/signin"
+                                class="text-[#ea4c89] font-bold hover:underline">Sign in to comment</a></p>
+                    </div>
+                <% } %>
+
+                <div class="space-y-6">
+                    <% comments.forEach(comment=> { %>
+                        <div class="flex space-x-3 group">
+                            <div class="flex-shrink-0">
+                                <% if (comment.createdBy && comment.createdBy.profileimg) { %>
+                                    <img src="<%= comment.createdBy.profileimg %>"
+                                        class="w-10 h-10 rounded-full object-cover border border-gray-50 shadow-sm"
+                                        alt="user">
+                                <% } else { %>
+                                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-400 border border-gray-100">
+                                        <%= (comment.createdBy && comment.createdBy.fullName) ?
+                                            comment.createdBy.fullName.charAt(0).toUpperCase() : 'U' %>
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <div class="flex-1 bg-white border border-gray-100 p-5 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex justify-between items-center mb-2">
+                                    <strong class="text-sm font-bold text-gray-900">
+                                        <%= (comment.createdBy && comment.createdBy.fullName) ?
+                                            comment.createdBy.fullName : 'Anonymous' %>
+                                    </strong>
+
+                                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">
+                                        <%= new Date(comment.createdAt).toLocaleDateString('en-US', {
+                                            month: 'short' , day: 'numeric' , year: 'numeric' }) %>
+                                    </span>
+                                </div>
+                                <p class="text-gray-700 text-sm leading-relaxed">
+                                    <%= comment.content %>
+                                </p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </section>
+        </div>
+    </article>
+
+    <%- include('./partials/scripts') %>
+</body>
+
+</html>
