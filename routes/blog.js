@@ -4,19 +4,11 @@ const multer = require('multer')
 const path = require('path')
 const Blog = require('../models/blog')
 const Comment = require('../models/comment')
-const mongoose = require("mongoose");
+const storage = require("../config/cloudinary");
 
 //multer storage
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.resolve(`./public/uploads/`))
-    },
-    filename: function (req, file, cb) {
-        const fname = `${req.isLoggedInUser.name} - ${file.originalname}`
-        cb(null, fname)
-    },
-});
 const upload = multer({ storage: storage })
+
 
 router.get('/add-new', (req, res) => {
     return res.render('addblog', {
@@ -29,7 +21,7 @@ router.post('/', upload.single('coverimg'), async (req, res) => {
     const blog = await Blog.create({
         title,
         body,
-        coverImgURL: `/uploads/${req.file.filename}`,
+        coverImgURL:  req.file.path,
         createdBy: req.isLoggedInUser._id
     })
     res.redirect(`/blog/${blog._id}`)
